@@ -4,14 +4,15 @@ Email: nbashar4@gmail.com
 */
 #include "Graph.hpp"
 #include <iostream>
+using namespace std;
 
 Graph::Graph() : numVertices(0) {}
 
-void Graph::loadGraph(const std::vector<std::vector<int>> &matrix)
+void Graph::loadGraph(const vector<vector<int>> &matrix)
 {
     if (matrix.size() != matrix[0].size())
     {
-        throw std::invalid_argument("Invalid graph: The graph is not a square matrix.");
+        throw invalid_argument("Invalid graph: The graph is not a square matrix.");
     }
     adjacencyMatrix = matrix;
     numVertices = matrix.size();
@@ -44,7 +45,7 @@ void Graph::printGraph()
             }
         }
     }
-    std::cout << "Graph with " << numVertices << " vertices and " << numEdges << " edges" << std::endl;
+    cout << "Graph with " << numVertices << " vertices and " << numEdges << " edges" << endl;
 }
 
 int Graph::getNumVertices()
@@ -57,7 +58,7 @@ bool Graph::getIsDirected()
     return isDirected;
 }
 
-std::vector<std::vector<int>> &Graph::getAdjacencyMatrix()
+vector<vector<int>> &Graph::getAdjacencyMatrix()
 {
     return adjacencyMatrix;
 }
@@ -66,10 +67,10 @@ Graph &Graph::operator+(const Graph &g)
 {
     if (this->numVertices != g.numVertices)
     {
-        throw std::invalid_argument("Invalid operation: The graphs have different number of vertices.");
+        throw invalid_argument("Invalid operation: The graphs have different number of vertices.");
     }
 
-    std::vector<std::vector<int>> newMatrix(this->numVertices, std::vector<int>(this->numVertices, 0));
+    vector<vector<int>> newMatrix(this->numVertices, vector<int>(this->numVertices, 0));
     for (int i = 0; i < this->numVertices; ++i)
     {
         for (int j = 0; j < this->numVertices; ++j)
@@ -87,7 +88,7 @@ Graph &Graph::operator+=(const Graph &g)
 {
     if (this->numVertices != g.numVertices)
     {
-        throw std::invalid_argument("Invalid operation: The graphs have different number of vertices.");
+        throw invalid_argument("Invalid operation: The graphs have different number of vertices.");
     }
 
     for (int i = 0; i < this->numVertices; ++i)
@@ -110,10 +111,10 @@ Graph &Graph::operator-(const Graph &g)
 {
     if (this->numVertices != g.numVertices)
     {
-        throw std::invalid_argument("Invalid operation: The graphs have different number of vertices.");
+        throw invalid_argument("Invalid operation: The graphs have different number of vertices.");
     }
 
-    std::vector<std::vector<int>> newMatrix(this->numVertices, std::vector<int>(this->numVertices, 0));
+    vector<vector<int>> newMatrix(this->numVertices, vector<int>(this->numVertices, 0));
     for (int i = 0; i < this->numVertices; ++i)
     {
         for (int j = 0; j < this->numVertices; ++j)
@@ -131,7 +132,7 @@ Graph &Graph::operator-=(const Graph &g)
 {
     if (this->numVertices != g.numVertices)
     {
-        throw std::invalid_argument("Invalid operation: The graphs have different number of vertices.");
+        throw invalid_argument("Invalid operation: The graphs have different number of vertices.");
     }
 
     for (int i = 0; i < this->numVertices; ++i)
@@ -175,10 +176,10 @@ Graph &Graph::operator*(const Graph &g)
 {
     if (this->numVertices != g.numVertices)
     {
-        throw std::invalid_argument("Invalid operation: The graphs have different number of vertices.");
+        throw invalid_argument("Invalid operation: The graphs have different number of vertices.");
     }
 
-    std::vector<std::vector<int>> newMatrix(this->numVertices, std::vector<int>(this->numVertices, 0));
+    vector<vector<int>> newMatrix(this->numVertices, vector<int>(this->numVertices, 0));
     // Matrix multiplication
     for (int i = 0; i < this->numVertices; ++i)
     {
@@ -213,10 +214,10 @@ Graph &Graph::operator*=(const Graph &g)
 {
     if (this->numVertices != g.numVertices)
     {
-        throw std::invalid_argument("Invalid operation: The graphs have different number of vertices.");
+        throw invalid_argument("Invalid operation: The graphs have different number of vertices.");
     }
 
-    std::vector<std::vector<int>> newMatrix(this->numVertices, std::vector<int>(this->numVertices, 0));
+    vector<vector<int>> newMatrix(this->numVertices, vector<int>(this->numVertices, 0));
     // Matrix multiplication
     for (int i = 0; i < this->numVertices; ++i)
     {
@@ -272,6 +273,13 @@ Graph &Graph::operator++()
     return *this;
 }
 
+Graph Graph::operator++(int)
+{
+    Graph* temp = new Graph(*this);
+    ++(*this); // Use the prefix increment operator
+    return *temp;
+}
+
 Graph &Graph::operator--()
 {
     for (int i = 0; i < this->numVertices; ++i)
@@ -309,5 +317,29 @@ bool Graph::operator==(const Graph &g)
 bool Graph::operator!=(const Graph &g)
 {
     return !(*this == g);
+}
+
+ostream &operator<<(ostream &os, const Graph &g)
+{
+    // Should print the matrix of the graph: [0, 1, 0], [1, 0, 1], [0, 1, 0]
+    for (int i = 0; i < g.numVertices; ++i)
+    {
+        os << "[";
+        for (int j = 0; j < g.numVertices; ++j)
+        {
+            os << g.adjacencyMatrix[i][j];
+            if (j != g.numVertices - 1)
+            {
+                os << ", ";
+            }
+        }
+        os << "]";
+        if (i != g.numVertices - 1)
+        {
+            os << ", ";
+        }
+    }
+    os << endl;
+    return os;
 }
 

@@ -6,21 +6,23 @@ Email: nbashar4@gmail.com
 #define GRAPH_HPP
 
 #include <vector>
+#include <iostream>
+using namespace std;
 
 class Graph
 {
 private:
-    std::vector<std::vector<int>> adjacencyMatrix;
+    vector<vector<int>> adjacencyMatrix;
     int numVertices;
     bool isDirected;
 
 public:
     Graph();
-    void loadGraph(const std::vector<std::vector<int>> &matrix);
+    void loadGraph(const vector<vector<int>> &matrix);
     void printGraph();
     int getNumVertices();
     bool getIsDirected();
-    std::vector<std::vector<int>> &getAdjacencyMatrix();
+    vector<vector<int>> &getAdjacencyMatrix();
 
     // operations
     Graph &operator+(const Graph &g);
@@ -36,6 +38,7 @@ public:
     bool operator==(const Graph &g);
     bool operator!=(const Graph &g);
     Graph &operator++();
+    Graph operator++(int);
     Graph &operator--();
     Graph &operator*(int);
     Graph &operator*(const Graph &g);
@@ -45,7 +48,7 @@ public:
     Graph &operator/=(int);
 
     // print operator
-    friend std::ostream &operator<<(std::ostream &os, const Graph &g);
+    friend ostream &operator<<(ostream &os, const Graph &g);
 };
 
 #endif // GRAPH_HPP
