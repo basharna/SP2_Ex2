@@ -17,6 +17,19 @@ void Graph::loadGraph(const vector<vector<int>> &matrix)
     adjacencyMatrix = matrix;
     numVertices = matrix.size();
 
+    // Calculate the number of edges
+    numEdges = 0;
+    for (int i = 0; i < numVertices; ++i)
+    {
+        for (int j = 0; j < numVertices; ++j)
+        {
+            if (adjacencyMatrix[i][j] != 0)
+            {
+                numEdges++;
+            }
+        }
+    }
+
     // Check if the graph is directed or not
     isDirected = false;
     for (int i = 0; i < numVertices; ++i)
@@ -266,7 +279,10 @@ Graph &Graph::operator++()
     {
         for (int j = 0; j < this->numVertices; ++j)
         {
-            this->adjacencyMatrix[i][j]++;
+            if(adjacencyMatrix[i][j] != 0)
+            {
+                this->adjacencyMatrix[i][j]++;
+            }
         }
     }
 
@@ -276,7 +292,7 @@ Graph &Graph::operator++()
 Graph Graph::operator++(int)
 {
     Graph* temp = new Graph(*this);
-    ++(*this); // Use the prefix increment operator
+    ++(*this); 
     return *temp;
 }
 
@@ -286,11 +302,21 @@ Graph &Graph::operator--()
     {
         for (int j = 0; j < this->numVertices; ++j)
         {
-            this->adjacencyMatrix[i][j]--;
+            if (adjacencyMatrix[i][j] != 0)
+            {
+                this->adjacencyMatrix[i][j]--;
+            }
         }
     }
 
     return *this;
+}
+
+Graph Graph::operator--(int)
+{
+    Graph* temp = new Graph(*this);
+    --(*this); 
+    return *temp;
 }
 
 bool Graph::operator==(const Graph &g)
@@ -343,3 +369,89 @@ ostream &operator<<(ostream &os, const Graph &g)
     return os;
 }
 
+bool Graph::isSubgraphOf(const Graph &g) const{
+    const auto &subAdj = this->adjacencyMatrix;
+    const auto &adj = g.adjacencyMatrix;
+    int subVertices = this->numVertices;
+    int vertices = g.numVertices;
+
+    vector<int> mapping(subVertices, -1);
+    vector<bool> visited(vertices, false);
+
+    return isSubgraphOfHelper(subAdj, adj, mapping, visited, 0);
+}
+
+bool Graph::isSubgraphOfHelper(const vector<vector<int>> &subAdj, const vector<vector<int>> &adj, vector<int> &mapping, vector<bool> &visited, size_t index) const{
+    if(index == mapping.size()){
+        for(size_t i = 0; i < subAdj.size(); i++){
+            for(size_t j = 0; j < subAdj.size(); j++){
+                if(subAdj[i][j] != 0 && adj[mapping[i]][mapping[j]] == 0){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    for(size_t i = 0; i < adj.size(); i++){
+        if(visited[i]){
+            continue;
+        }
+        visited[i] = true;
+        mapping[index] = i;
+        if(isSubgraphOfHelper(subAdj, adj, mapping, visited, index + 1)){
+            return true;
+        }
+        visited[i] = false;
+    }
+    return false;
+}
+
+bool Graph::operator>(const Graph &g)
+{
+    if(this->isSubgraphOf(g))
+    {
+        return false;
+    }
+    if(g.isSubgraphOf(*this))
+    {
+        return true;
+    }
+
+    int thisEdges = this->numEdges;
+    int gEdges = g.numEdges;
+    if (thisEdges > gEdges)
+    {
+        return true;
+    }
+    else if (thisEdges < gEdges)
+    {
+        return false;
+    }
+
+    if (this->numVertices > g.numVertices)
+    {
+        return true;
+    }
+    else if (this->numVertices < g.numVertices)
+    {
+        return false;
+    }
+
+    return false;
+}
+
+bool Graph::operator>=(const Graph &g)
+{
+    return (*this > g) || (*this == g);
+}
+
+bool Graph::operator<(const Graph &g)
+{
+    return !(*this >= g);
+}
+
+bool Graph::operator<=(const Graph &g)
+{
+    return !(*this > g);
+}

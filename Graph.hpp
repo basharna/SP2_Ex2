@@ -14,7 +14,9 @@ class Graph
 private:
     vector<vector<int>> adjacencyMatrix;
     int numVertices;
+    int numEdges;
     bool isDirected;
+    bool isSubgraphOfHelper(const vector<vector<int>> &subAdj, const vector<vector<int>> &adj, vector<int> &mapping, vector<bool> &visited, size_t index) const;
 
 public:
     Graph();
@@ -23,6 +25,7 @@ public:
     int getNumVertices();
     bool getIsDirected();
     vector<vector<int>> &getAdjacencyMatrix();
+    bool isSubgraphOf(const Graph &g) const;
 
     // operations
     Graph &operator+(const Graph &g);
@@ -40,6 +43,7 @@ public:
     Graph &operator++();
     Graph operator++(int);
     Graph &operator--();
+    Graph operator--(int);
     Graph &operator*(int);
     Graph &operator*(const Graph &g);
     Graph &operator*=(int);

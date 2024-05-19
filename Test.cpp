@@ -302,3 +302,513 @@ TEST_CASE("Invalid Graph")
     Graph g;
     CHECK_THROWS(g.loadGraph(adjacencyMatrix));
 }
+
+TEST_CASE("Addition")
+{
+    SUBCASE("g3 = g1 + g2")
+    {
+        Graph g1;
+        Graph g2;
+        vector<vector<int>> adjmat1 = {
+            {0, 1, 0},
+            {1, 0, 3},
+            {0, 3, 0}};
+        g1.loadGraph(adjmat1);
+
+        vector<vector<int>> adjmat2 = {
+            {0, -1, 0},
+            {1, 0, 1},
+            {0, -1, 0}};
+        g2.loadGraph(adjmat2);
+
+        Graph g3;
+
+        g3 = g1 + g2;
+
+        CHECK(g3.getAdjacencyMatrix() == vector<vector<int>>{{0, 0, 0}, {2, 0, 4}, {0, 2, 0}});
+    }
+
+    SUBCASE("g1 += g2")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 1, 0},
+            {1, 0, 3},
+            {0, 3, 0}};
+        g1.loadGraph(adjmat1);
+
+        Graph g2;
+        vector<vector<int>> adjmat2 = {
+            {0, -1, 0},
+            {1, 0, 1},
+            {0, -1, 0}};
+        g2.loadGraph(adjmat2);
+
+        g1 += g2;
+
+        CHECK(g1.getAdjacencyMatrix() == vector<vector<int>>{{0, 0, 0}, {2, 0, 4}, {0, 2, 0}});
+
+        vector<vector<int>> adjmat3 = {
+            {0, -2, 0, 5, 0, 0, 0, 0, 3, 0},
+            {-2, 0, 4, 0, 0, 0, 0, 7, 0, -1},
+            {0, 4, 0, 0, 6, 0, 8, 0, 0, 0},
+            {5, 0, 0, 0, 0, 2, 0, -3, 0, 0},
+            {0, 0, 6, 0, 0, -4, 0, 0, 0, 0},
+            {0, 0, 0, 2, -4, 0, 9, 0, 1, 0},
+            {0, 0, 8, 0, 0, 9, 0, 5, 0, -2},
+            {0, 7, 0, -3, 0, 0, 5, 0, 0, 0},
+            {3, 0, 0, 0, 0, 1, 0, 0, 0, 4},
+            {0, -1, 0, 0, 0, 0, -2, 0, 4, 0}};
+        g1.loadGraph(adjmat3);
+
+        vector<vector<int>> adjmat4 = {
+            {0, 0, -5, 0, 3, 0, 2, 0, 0, 1},
+            {0, 0, 4, 0, 0, -2, 0, 0, 6, 0},
+            {-5, 4, 0, 7, 0, 1, 0, -4, 0, 0},
+            {0, 0, 7, 0, -3, 0, 0, 0, 0, 8},
+            {3, 0, 0, -3, 0, 5, 0, 0, 7, 0},
+            {0, -2, 1, 0, 5, 0, 6, 0, 0, 0},
+            {2, 0, 0, 0, 0, 6, 0, 9, 0, -7},
+            {0, 0, -4, 0, 0, 0, 9, 0, 2, 0},
+            {0, 6, 0, 0, 7, 0, 0, 2, 0, -1},
+            {1, 0, 0, 8, 0, 0, -7, 0, -1, 0}};
+        g2.loadGraph(adjmat4);
+
+        g1 += g2;
+
+        CHECK(g1.getAdjacencyMatrix() == vector<vector<int>>{
+                                             {0, -2, -5, 5, 3, 0, 2, 0, 3, 1},
+                                             {-2, 0, 8, 0, 0, -2, 0, 7, 6, -1},
+                                             {-5, 8, 0, 7, 6, 1, 8, -4, 0, 0},
+                                             {5, 0, 7, 0, -3, 2, 0, -3, 0, 8},
+                                             {3, 0, 6, -3, 0, 1, 0, 0, 7, 0},
+                                             {0, -2, 1, 2, 1, 0, 15, 0, 1, 0},
+                                             {2, 0, 8, 0, 0, 15, 0, 14, 0, -9},
+                                             {0, 7, -4, -3, 0, 0, 14, 0, 2, 0},
+                                             {3, 6, 0, 0, 7, 1, 0, 2, 0, 3},
+                                             {1, -1, 0, 8, 0, 0, -9, 0, 3, 0}});
+    }
+
+    SUBCASE("graph++")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, -3, 5, 0, 2},
+            {-3, 0, 4, 7, -1},
+            {5, 4, 0, -2, 3},
+            {0, 7, -2, 0, 6},
+            {2, -1, 3, 6, 0}};
+        g1.loadGraph(adjmat1);
+        g1++;
+        CHECK(g1.getAdjacencyMatrix() == vector<vector<int>>{{0, -2, 6, 0, 3}, {-2, 0, 5, 8, 0}, {6, 5, 0, -1, 4}, {0, 8, -1, 0, 7}, {3, 0, 4, 7, 0}});
+    }
+
+    SUBCASE("++graph")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 6, 0, 3, -4},
+            {6, 0, -2, 0, 1},
+            {0, -2, 0, 5, 0},
+            {3, 0, 5, 0, -3},
+            {-4, 1, 0, -3, 0}};
+        g1.loadGraph(adjmat1);
+
+        ++g1;
+        CHECK(g1.getAdjacencyMatrix() == vector<vector<int>>{{0, 7, 0, 4, -3}, {7, 0, -1, 0, 2}, {0, -1, 0, 6, 0}, {4, 0, 6, 0, -2}, {-3, 2, 0, -2, 0}});
+    }
+}
+
+TEST_CASE("Subtraction")
+{
+    SUBCASE("g3 = g1 - g2")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 2, 0},
+            {1, 0, 3},
+            {0, 4, 0}};
+        g1.loadGraph(adjmat1);
+
+        Graph g2;
+        vector<vector<int>> adjmat2 = {
+            {0, -1, 0},
+            {1, 0, 1},
+            {0, -1, 0}};
+        g2.loadGraph(adjmat2);
+
+        Graph g3;
+
+        g3 = g1 - g2;
+
+        CHECK(g3.getAdjacencyMatrix() == vector<vector<int>>{{0, 3, 0}, {0, 0, 2}, {0, 5, 0}});
+    }
+
+    SUBCASE("graph--")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 6, 0, 3, -4},
+            {6, 0, -2, 0, 1},
+            {0, -2, 0, 5, 0},
+            {3, 0, 5, 0, -3},
+            {-4, 1, 0, -3, 0}};
+        g1.loadGraph(adjmat1);
+
+        g1--;
+
+        CHECK(g1.getAdjacencyMatrix() == vector<vector<int>>{{0, 5, 0, 2, -5}, {5, 0, -3, 0, 0}, {0, -3, 0, 4, 0}, {2, 0, 4, 0, -4}, {-5, 0, 0, -4, 0}});
+    }
+
+    SUBCASE("--graph")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat2 = {
+            {0, 0, 0, 0, 0, 0},
+            {0, 0, 3, 7, 0, 0},
+            {0, 3, 0, 0, 8, 0},
+            {0, 7, 0, 0, -3, -2},
+            {0, 0, 8, -3, 0, 1},
+            {0, 0, 0, -2, 1, 0}};
+        g1.loadGraph(adjmat2);
+
+        --g1;
+        CHECK(g1.getAdjacencyMatrix() == vector<vector<int>>{{0, 0, 0, 0, 0, 0}, {0, 0, 2, 6, 0, 0}, {0, 2, 0, 0, 7, 0}, {0, 6, 0, 0, -4, -3}, {0, 0, 7, -4, 0, 0}, {0, 0, 0, -3, 0, 0}});
+    }
+
+    SUBCASE("g1 -= g2")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 2, 0},
+            {1, 0, 3},
+            {0, 4, 0}};
+        g1.loadGraph(adjmat1);
+
+        Graph g2;
+        vector<vector<int>> adjmat2 = {
+            {0, -1, 0},
+            {1, 0, 1},
+            {0, -1, 0}};
+        g2.loadGraph(adjmat2);
+
+        g1 -= g2;
+
+        CHECK(g1.getAdjacencyMatrix() == vector<vector<int>>{{0, 3, 0}, {0, 0, 2}, {0, 5, 0}});
+    }
+}
+
+TEST_CASE("Multiplication")
+{
+    SUBCASE("g3 = g1 * g2")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 2, 0},
+            {1, 0, 3},
+            {0, 4, 0}};
+        g1.loadGraph(adjmat1);
+
+        Graph g2;
+        vector<vector<int>> adjmat2 = {
+            {0, -1, 0},
+            {1, 0, 1},
+            {0, -1, 0}};
+        g2.loadGraph(adjmat2);
+
+        Graph g3;
+        g3 = g1 * g2;
+        CHECK(g3.getAdjacencyMatrix() == vector<vector<int>>{{2, 0, 2}, {0, -4, 0}, {4, 0, 4}});
+    }
+
+    SUBCASE("g1 *= g2")
+    {
+        Graph g1;
+        Graph g2;
+        vector<vector<int>> adjmat1 = {
+            {0, 2, 0},
+            {1, 0, 3},
+            {0, 4, 0}};
+        g1.loadGraph(adjmat1);
+
+        vector<vector<int>> adjmat2 = {
+            {0, -1, 0},
+            {1, 0, 1},
+            {0, -1, 0}};
+        g2.loadGraph(adjmat2);
+
+        g1 *= g2;
+        CHECK(g1.getAdjacencyMatrix() == vector<vector<int>>{{2, 0, 2}, {0, -4, 0}, {4, 0, 4}});
+    }
+
+    SUBCASE("g2 = g1 * scalar")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 2, 0},
+            {1, 0, 3},
+            {0, 4, 0}};
+        g1.loadGraph(adjmat1);
+
+        Graph g2;
+        g2 = g1 * -2;
+
+        CHECK(g2.getAdjacencyMatrix() == vector<vector<int>>{{0, -4, 0}, {-2, 0, -6}, {0, -8, 0}});
+    }
+
+    SUBCASE("g1 *= scalar")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 2, 0},
+            {1, 0, 3},
+            {0, 4, 0}};
+        g1.loadGraph(adjmat1);
+
+        g1 *= 2;
+
+        CHECK(g1.getAdjacencyMatrix() == vector<vector<int>>{{0, 4, 0}, {2, 0, 6}, {0, 8, 0}});
+    }
+}
+
+TEST_CASE("Division")
+{
+    SUBCASE("g2 = g1 / scalar")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 2, 0},
+            {1, 0, 3},
+            {0, 4, 0}};
+        g1.loadGraph(adjmat1);
+
+        Graph g2;
+        g2 = g1 / 2;
+
+        CHECK(g2.getAdjacencyMatrix() == vector<vector<int>>{{0, 1, 0}, {0, 0, 1}, {0, 2, 0}});
+    }
+
+    SUBCASE("g1 /= scalar")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 2, 0},
+            {1, 0, 3},
+            {0, 4, 0}};
+        g1.loadGraph(adjmat1);
+
+        g1 /= 2;
+
+        CHECK(g1.getAdjacencyMatrix() == vector<vector<int>>{{0, 1, 0}, {0, 0, 1}, {0, 2, 0}});
+    }
+}
+
+TEST_CASE("Comparison")
+{
+    SUBCASE("g1 == g2")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 2, 0},
+            {1, 0, 3},
+            {0, 4, 0}};
+        g1.loadGraph(adjmat1);
+
+        Graph g2;
+        vector<vector<int>> adjmat2 = {
+            {0, 2, 0},
+            {1, 0, 3},
+            {0, 4, 0}};
+        g2.loadGraph(adjmat2);
+
+        CHECK(g1 == g2);
+
+        vector<vector<int>> adjmat3 = {
+            {0, -1, 0},
+            {1, 0, 1},
+            {0, -1, 0}};
+        g2.loadGraph(adjmat3);
+
+        CHECK_FALSE(g1 == g2);
+    }
+
+    SUBCASE("graph1 != graph2")
+    {
+        Graph g1;
+        Graph g2;
+        vector<vector<int>> adjmat1 = {
+            {0, -1, 0},
+            {1, 0, 1},
+            {0, -1, 0}};
+        g1.loadGraph(adjmat1);
+
+        vector<vector<int>> adjmat2 = {
+            {0, 0, 0},
+            {0, 0, 1},
+            {0, -1, 0}};
+        g2.loadGraph(adjmat2);
+
+        CHECK(g1 != g2);
+
+        vector<vector<int>> adjmat3 = {
+            {0, 3, 6, 0},
+            {3, 0, 3, 7},
+            {6, 3, 0, 0},
+            {0, 7, 0, 0}};
+        g2.loadGraph(adjmat3);
+
+        CHECK(g1 != g2);
+
+        vector<vector<int>> adjmat4 = {
+            {0, -1, 0},
+            {1, 0, 1},
+            {0, -1, 0}};
+        g2.loadGraph(adjmat4);
+
+        CHECK_FALSE(g1 != g2);
+    }
+
+    SUBCASE("g1 > g2")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 6, 0, 3, -4},
+            {6, 0, -2, 0, 1},
+            {0, -2, 0, 5, 0},
+            {3, 0, 5, 0, -3},
+            {-4, 1, 0, -3, 0}};
+        g1.loadGraph(adjmat1);
+
+        Graph g2;
+        vector<vector<int>> adjmat2 = {
+            {6, 0, 3, -4},
+            {0, -2, 0, 1},
+            {-2, 0, 5, 0},
+            {0, 5, 0, -3}};
+        g2.loadGraph(adjmat2);
+
+        CHECK(g1 > g2);
+
+        vector<vector<int>> adjmat3 = {
+            {0, 1, 1, 1, 1},
+            {1, 0, 1, 1, 1},
+            {1, 1, 0, 1, 1},
+            {1, 1, 1, 0, 1},
+            {1, 1, 1, 1, 0}};
+        g2.loadGraph(adjmat3);
+
+        CHECK(g2 > g1);
+    }
+
+    SUBCASE("g1 < g2")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 6, 0, 3, -4},
+            {6, 0, -2, 0, 1},
+            {0, -2, 0, 5, 0},
+            {3, 0, 5, 0, -3},
+            {-4, 1, 0, -3, 0}};
+        g1.loadGraph(adjmat1);
+
+        Graph g2;
+        vector<vector<int>> adjmat2 = {
+            {6, 0, 3, -4},
+            {0, -2, 0, 1},
+            {-2, 0, 5, 0},
+            {0, 5, 0, -3}};
+        g2.loadGraph(adjmat2);
+
+        CHECK(g2 < g1);
+    }
+
+    SUBCASE("g1 >= g2")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 6, 0, 3, -4},
+            {6, 0, -2, 0, 1},
+            {0, -2, 0, 5, 0},
+            {3, 0, 5, 0, -3},
+            {-4, 1, 0, -3, 0}};
+        g1.loadGraph(adjmat1);
+
+        Graph g2;
+        vector<vector<int>> adjmat2 = {
+            {6, 0, 3, -4},
+            {0, -2, 0, 1},
+            {-2, 0, 5, 0},
+            {0, 5, 0, -3}};
+        g2.loadGraph(adjmat2);
+
+        CHECK(g1 >= g2);
+
+        Graph g3;
+        vector<vector<int>> adjmat3 = {
+            {0, 6, 0, 3, -4},
+            {6, 0, -2, 0, 1},
+            {0, -2, 0, 5, 0},
+            {3, 0, 5, 0, -3},
+            {-4, 1, 0, -3, 0}};
+        g3.loadGraph(adjmat3);
+        CHECK(g1 >= g3);
+        CHECK(g3 >= g1);
+    }
+
+    SUBCASE("g1 <= g2")
+    {
+        Graph g1;
+        vector<vector<int>> adjmat1 = {
+            {0, 6, 0, 3, -4},
+            {6, 0, -2, 0, 1},
+            {0, -2, 0, 5, 0},
+            {3, 0, 5, 0, -3},
+            {-4, 1, 0, -3, 0}};
+        g1.loadGraph(adjmat1);
+
+        Graph g2;
+        vector<vector<int>> adjmat2 = {
+            {6, 0, 3, -4},
+            {0, -2, 0, 1},
+            {-2, 0, 5, 0},
+            {0, 5, 0, -3}};
+        g2.loadGraph(adjmat2);
+
+        CHECK(g2 <= g1);
+
+        Graph g3;
+        vector<vector<int>> adjmat3 = {
+            {0, 6, 0, 3, -4},
+            {6, 0, -2, 0, 1},
+            {0, -2, 0, 5, 0},
+            {3, 0, 5, 0, -3},
+            {-4, 1, 0, -3, 0}};
+        g3.loadGraph(adjmat3);
+        CHECK(g3 <= g1);
+        CHECK(g1 <= g3);
+    }
+}
+
+TEST_CASE("Error")
+{
+    Graph g1;
+    vector<vector<int>> adjmat1 = {
+        {0, 1, 0, 0, 1},
+        {1, 0, 1, 0, 0},
+        {0, 1, 0, 1, 0},
+        {0, 0, 1, 0, 1},
+        {1, 0, 0, 1, 0}};
+    g1.loadGraph(adjmat1);
+
+    Graph g2;
+    vector<vector<int>> adjmat2 = {
+        {0, 1, 0, 0},
+        {1, 0, 1, 0},
+        {0, 1, 0, 1},
+        {0, 0, 1, 0}};
+    g2.loadGraph(adjmat2);
+
+    CHECK_THROWS(g1 + g2);
+    CHECK_THROWS(g1 - g2);
+    CHECK_THROWS(g1 * g2);
+}

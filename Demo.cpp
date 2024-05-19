@@ -24,7 +24,6 @@ int main()
     cout << g1++;
     cout << g1;
     
-    //cout<<g1; // Should print the matrix of the graph: [0, 1, 0], [1, 0, 1], [0, 1, 0]
 
     // 3x3 matrix that represents a weighted connected graph.
     vector<vector<int>> weightedGraph = {
@@ -35,13 +34,13 @@ int main()
     g2.loadGraph(weightedGraph); // Load the graph to the object.
 
     Graph g3 = g1 + g2; // Add the two graphs together.
-    cout<<g3;           // Should print the matrix of the graph: [0, 2, 1], [2, 0, 3], [1, 3, 0]
+    cout<<g3;           // Should print the matrix of the graph: [0, 3, 1], [3, 0, 4], [1, 4, 0]
 
     g1 *= -2;        // Multiply the graph by -2.
-    cout<<g1; // Should print the matrix of the graph: [0, -2, 0], [-2, 0, -2], [0, -2, 0]
+    cout<<g1; // Should print the matrix of the graph: [0, -4, 0], [-4, 0, -4], [0, -4, 0]
 
     Graph g4 = g1 * g2; // Multiply the two graphs together.
-    cout<<g4;           // Should print the multiplication of the matrices of g1 and g2: [-2, 0, -4], [-2, -6, -2], [-2, 0, -4]
+    cout<<g4;           // Should print the multiplication of the matrices of g1 and g2: [-4, 0, -8], [-4, -12, -4], [-4, 0, -8]
 
     // 5x5 matrix that represents a connected graph.
     vector<vector<int>> graph2 = {
